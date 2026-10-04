@@ -50,5 +50,5 @@ function render(){
 }
 document.querySelector("#prevBtn").addEventListener("click",()=>{week--;render()});
 document.querySelector("#nextBtn").addEventListener("click",()=>{week++;render()});
-document.querySelector("#todayBtn").addEventListener("click",()=>{week=41;render()});
+document.querySelector("#todayBtn").addEventListener("click",()=>{window.location.reload()});
 render();
