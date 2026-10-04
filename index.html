@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4f1eb" />
+  <title>Frida Performance Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <p class="eyebrow">FRIDA · PERFORMANCE LAB</p>
+      <div class="week-head">
+        <div>
+          <h1 id="weekTitle">Uge 41</h1>
+          <p><strong id="weekKm">24 km</strong> planlagt</p>
+        </div>
+        <div class="week-nav" aria-label="Skift uge">
+          <button id="todayBtn" class="icon-btn" aria-label="Gå til denne uge">↻</button>
+          <button id="prevBtn" class="icon-btn" aria-label="Forrige uge">‹</button>
+          <span id="weekLabel">Uge 41</span>
+          <button id="nextBtn" class="icon-btn" aria-label="Næste uge">›</button>
+        </div>
+      </div>
+    </header>
+    <section id="workouts" class="workouts" aria-live="polite"></section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
