@@ -75,12 +75,15 @@ function render(){
  const now=new Date();
  const todayIndex=(now.getDay()+6)%7;
  const currentWeek=getISOWeek(now);
+ const todayDate=now.getDate();
+ const monthNames=["jan.","feb.","mar.","apr.","maj","jun.","jul.","aug.","sep.","okt.","nov.","dec."];
+ const todayLabel=todayDate+". "+monthNames[now.getMonth()];
  applySavedMoves(p);
  document.querySelector("#weekTitle").textContent="Uge "+week;
  document.querySelector("#weekLabel").textContent="Uge "+week;
  document.querySelector("#weekKm").textContent=p.km+" km";
  if(!p.days.length){el.innerHTML='<div class="card"><div style="padding:28px;text-align:center;color:#77716c">Denne uge er ikke udfyldt endnu.</div></div>';return}
- el.innerHTML=p.days.map((d,i)=>`<article class="card ${week===currentWeek&&i===todayIndex?"today":""}" data-i="${i}">
+ el.innerHTML=p.days.map((d,i)=>`<article class="card ${week===currentWeek&&(i===todayIndex||d.date===todayLabel)?"today":""}" data-i="${i}">
  <button class="card-button" aria-expanded="false">
   <div class="day"><strong>${d.day}</strong><span>${d.date}</span></div>
   <div class="badge ${d.type}">${d.icon}</div>
