@@ -100,3 +100,16 @@ document.querySelector("#prevBtn").addEventListener("click",()=>{week--;render()
 document.querySelector("#nextBtn").addEventListener("click",()=>{week++;render()});
 document.querySelector("#todayBtn").addEventListener("click",()=>{window.location.reload()});
 render();
+
+function renderProgress(){
+ const chart=document.querySelector("#kmChart"); if(!chart)return;
+ const weeks=Object.keys(plans).map(Number).sort((a,b)=>a-b);
+ const max=Math.max(...weeks.map(w=>plans[w].km),1);
+ chart.innerHTML=weeks.map(w=>'<div class="bar-col"><div class="bar-value">'+plans[w].km+'</div><div class="bar-track"><div class="bar-fill" style="height:'+Math.max(8,(plans[w].km/max)*100)+'%"></div></div><span>U'+w+'</span></div>').join("");
+}
+document.querySelectorAll(".nav-item").forEach(btn=>btn.addEventListener("click",()=>{
+ document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b===btn));
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===btn.dataset.page));
+ document.querySelector(".top").classList.toggle("progress-mode",btn.dataset.page==="progressPage");
+ if(btn.dataset.page==="progressPage")renderProgress();
+}));
