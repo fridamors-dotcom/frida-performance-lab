@@ -80,7 +80,7 @@ function render(){
  </article>`).join("");
  document.querySelectorAll(".card-button").forEach(btn=>btn.addEventListener("click",()=>{const c=btn.closest(".card");c.classList.toggle("open");btn.setAttribute("aria-expanded",c.classList.contains("open"))}));
  document.querySelectorAll(".move-select").forEach(sel=>sel.addEventListener("change",e=>{e.stopPropagation();moveWorkout(Number(sel.dataset.from),Number(sel.value))}));
- document.querySelectorAll(".complete").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();btn.classList.toggle("done");btn.textContent=btn.classList.contains("done")?"✓ Gennemført":"Markér som gennemført"}));
+ document.querySelectorAll(".complete").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();const card=btn.closest(".card");btn.classList.toggle("done");card.classList.toggle("completed",btn.classList.contains("done"));btn.textContent=btn.classList.contains("done")?"✓ Gennemført":"Markér som gennemført"}));
 }
 document.querySelector("#prevBtn").addEventListener("click",()=>{week--;render()});
 document.querySelector("#nextBtn").addEventListener("click",()=>{week++;render()});
