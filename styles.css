@@ -124,3 +124,9 @@
 .card.completed .details{background:rgba(223,233,217,.72)}
 .card.completed .badge{background:rgba(255,255,255,.55);color:var(--easy-ink)}
 .card.completed .complete{background:#cbdcc4;color:#31522f;border-color:rgba(66,99,63,.16)}
+
+
+/* Highlight today's card automatically */
+.card.today{position:relative;border-color:rgba(24,22,21,.18);border-left:5px solid rgba(86,56,66,.72)}
+.card.today .card-button{padding-left:10px}
+.card.today.completed{border-left-color:#42633f}
