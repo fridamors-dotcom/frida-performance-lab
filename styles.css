@@ -152,3 +152,10 @@
 .consistency-main{display:flex;align-items:center;gap:14px;margin-top:10px}.consistency-main strong{font-size:48px;line-height:1}.consistency-main span{font-size:13px;line-height:1.35;color:var(--muted)}.consistency>p:last-child{margin:12px 0 0;font-size:12px;color:var(--muted)}
 .top.progress-mode .week-head{display:none}.top.progress-mode{padding-bottom:12px}
 @media(max-width:600px){.app{padding-bottom:calc(84px + env(safe-area-inset-bottom))}.progress-page{overflow:visible}.top.progress-mode{flex:0 0 auto}.app:has(#progressPage.active){height:auto;min-height:100dvh}.app:has(#progressPage.active) .eyebrow{margin-bottom:0}}
+
+
+/* Progress bars: planned capacity with completed km filling from the bottom */
+.bar-track{position:relative;width:20px;margin:0 auto;background:rgba(185,121,140,.16);border-radius:7px 7px 3px 3px;overflow:hidden}
+.bar-plan{position:absolute;inset:0;border:1px solid rgba(185,121,140,.30);border-radius:inherit}
+.bar-fill{position:absolute!important;left:0;right:0;bottom:0;width:100%!important;background:#a85f76!important;border-radius:6px 6px 2px 2px;transition:height .35s ease}
+.bar-value{white-space:nowrap;font-size:8px}
