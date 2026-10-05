@@ -32,9 +32,9 @@
     grid-template-rows:repeat(7,minmax(0,1fr));
     gap:7px;
   }
-  .card{min-height:0;border-radius:19px}
+  .card{min-height:0;border-radius:19px;display:flex;flex-direction:column}
   .card-button{
-    height:100%;
+    flex:1 0 auto;
     min-height:0;
     padding:8px 13px;
     grid-template-columns:66px 46px 1fr 16px;
