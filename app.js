@@ -53,6 +53,19 @@ function applySavedMoves(p){
 function saveWeek(p){
  try{localStorage.setItem(storageKey(),JSON.stringify({days:p.days}))}catch(e){}
 }
+function completionKey(w=week){return "frida-completed-week-"+w}
+function getCompleted(w=week){
+ try{return JSON.parse(localStorage.getItem(completionKey(w))||"{}")}catch(e){return{}}
+}
+function setCompleted(i,value){
+ const done=getCompleted();done[i]=value;
+ try{localStorage.setItem(completionKey(),JSON.stringify(done))}catch(e){}
+}
+function actualKm(w){
+ const p=plans[w];if(!p)return 0;
+ const done=getCompleted(w);
+ return p.days.reduce((sum,d,i)=>sum+(done[i]&&d.type!=="rest"?(parseFloat(d.title)||0):0),0);
+}
 function moveWorkout(from,to){
  if(from===to)return;
  const p=plans[week]; if(!p)return;
@@ -83,18 +96,19 @@ function render(){
  document.querySelector("#weekLabel").textContent="Uge "+week;
  document.querySelector("#weekKm").textContent=p.km+" km";
  if(!p.days.length){el.innerHTML='<div class="card"><div style="padding:28px;text-align:center;color:#77716c">Denne uge er ikke udfyldt endnu.</div></div>';return}
- el.innerHTML=p.days.map((d,i)=>`<article class="card ${week===currentWeek&&(i===todayIndex||d.date===todayLabel)?"today":""}" data-i="${i}">
+ const completed=getCompleted();
+ el.innerHTML=p.days.map((d,i)=>`<article class="card ${week===currentWeek&&(i===todayIndex||d.date===todayLabel)?"today":""} ${completed[i]?"completed":""}" data-i="${i}">
  <button class="card-button" aria-expanded="false">
   <div class="day"><strong>${d.day}</strong><span>${d.date}</span></div>
   <div class="badge ${d.type}">${d.icon}</div>
   <div class="summary"><strong>${d.title}${d.name?'<br>'+d.name:''}</strong><span>${d.meta}</span></div>
   <span class="chevron">›</span>
  </button>
- <div class="details"><div><div class="detail-inner"><p>${d.description}</p>${d.steps.length?'<ul>'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>':''}${d.type!=="rest"?'<div class="move-row"><label>Flyt løbet til <select class="move-select" data-from="'+i+'">'+dayNames.map((n,di)=>'<option value="'+di+'" '+(di===i?'selected':'')+'>'+n+'</option>').join('')+'</select></label></div>':''}<button class="complete">Markér som gennemført</button></div></div></div>
+ <div class="details"><div><div class="detail-inner"><p>${d.description}</p>${d.steps.length?'<ul>'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>':''}${d.type!=="rest"?'<div class="move-row"><label>Flyt løbet til <select class="move-select" data-from="'+i+'">'+dayNames.map((n,di)=>'<option value="'+di+'" '+(di===i?'selected':'')+'>'+n+'</option>').join('')+'</select></label></div>':''}<button class="complete ${completed[i]?"done":""}">${completed[i]?"✓ Gennemført":"Markér som gennemført"}</button></div></div></div>
  </article>`).join("");
  document.querySelectorAll(".card-button").forEach(btn=>btn.addEventListener("click",()=>{const c=btn.closest(".card");c.classList.toggle("open");btn.setAttribute("aria-expanded",c.classList.contains("open"))}));
  document.querySelectorAll(".move-select").forEach(sel=>sel.addEventListener("change",e=>{e.stopPropagation();moveWorkout(Number(sel.dataset.from),Number(sel.value))}));
- document.querySelectorAll(".complete").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();const card=btn.closest(".card");btn.classList.toggle("done");card.classList.toggle("completed",btn.classList.contains("done"));btn.textContent=btn.classList.contains("done")?"✓ Gennemført":"Markér som gennemført"}));
+ document.querySelectorAll(".complete").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();const card=btn.closest(".card");const i=Number(card.dataset.i);btn.classList.toggle("done");const done=btn.classList.contains("done");card.classList.toggle("completed",done);btn.textContent=done?"✓ Gennemført":"Markér som gennemført";setCompleted(i,done);renderProgress()}));
 }
 document.querySelector("#prevBtn").addEventListener("click",()=>{week--;render()});
 document.querySelector("#nextBtn").addEventListener("click",()=>{week++;render()});
@@ -105,7 +119,16 @@ function renderProgress(){
  const chart=document.querySelector("#kmChart"); if(!chart)return;
  const weeks=Object.keys(plans).map(Number).sort((a,b)=>a-b);
  const max=Math.max(...weeks.map(w=>plans[w].km),1);
- chart.innerHTML=weeks.map(w=>'<div class="bar-col"><div class="bar-value">'+plans[w].km+'</div><div class="bar-track"><div class="bar-fill" style="height:'+Math.max(8,(plans[w].km/max)*100)+'%"></div></div><span>U'+w+'</span></div>').join("");
+ chart.innerHTML=weeks.map(w=>{
+   const planned=plans[w].km,actual=actualKm(w),pct=Math.min(100,(actual/planned)*100);
+   return '<div class="bar-col"><div class="bar-value">'+actual+'/'+planned+'</div><div class="bar-track" title="'+actual+' af '+planned+' km"><div class="bar-plan"></div><div class="bar-fill" style="height:'+pct+'%"></div></div><span>U'+w+'</span></div>';
+ }).join("");
+ const streak=document.querySelector("#consistencyValue");
+ if(streak){
+   let count=0;
+   for(const w of weeks){const done=getCompleted(w);const runs=Object.values(done).filter(Boolean).length;if(runs>=2)count++;else if(w<=getISOWeek(new Date()))count=0;}
+   streak.textContent=count;
+ }
 }
 document.querySelectorAll(".nav-item").forEach(btn=>btn.addEventListener("click",()=>{
  document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b===btn));
