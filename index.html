@@ -27,7 +27,31 @@
         </div>
       </div>
     </header>
-    <section id="workouts" class="workouts" aria-live="polite"></section>
+    <section id="planPage" class="page active"><section id="workouts" class="workouts" aria-live="polite"></section></section>
+    <section id="progressPage" class="page progress-page">
+      <div class="progress-section">
+        <div class="section-head"><div><p class="section-kicker">UGENTLIG VOLUME</p><h2>Kilometer</h2></div><span>Planlagt</span></div>
+        <div id="kmChart" class="km-chart"></div>
+      </div>
+      <div class="progress-section">
+        <div class="section-head"><div><p class="section-kicker">PERSONLIGE REKORDER</p><h2>PB's</h2></div></div>
+        <div class="records">
+          <div class="record"><span>5 km</span><strong>33:00</strong></div>
+          <div class="record"><span>10 km</span><strong>1:10:00</strong></div>
+          <div class="record"><span>Længste tur</span><strong>10 km</strong></div>
+          <div class="record"><span>Halvmarathon</span><strong>—</strong></div>
+        </div>
+      </div>
+      <div class="progress-section consistency">
+        <p class="section-kicker">CONSISTENCY</p>
+        <div class="consistency-main"><strong id="consistencyValue">0</strong><span>uger i træk<br>med mindst 2 løb</span></div>
+        <p id="consistencyNote">Vi bygger din streak op herfra.</p>
+      </div>
+    </section>
+    <nav class="bottom-nav" aria-label="Navigation">
+      <button class="nav-item active" data-page="planPage"><span>⌁</span>Plan</button>
+      <button class="nav-item" data-page="progressPage"><span>↗</span>Progress</button>
+    </nav>
   </main>
   <script src="app.js"></script>
 </body>
