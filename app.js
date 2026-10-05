@@ -28,7 +28,15 @@ function strides(km){return{type:"easy",icon:"⌁",title:km+" km",name:"Easy + s
 function fartlek(km,work){return{type:"quality",icon:"⚡",title:km+" km",name:"Fartlek",meta:"Kontrolleret kvalitet",description:"Løb de hurtige dele frisk og afslappet – ikke max. Du skal have overskud til én gentagelse mere.",steps:["1,5 km easy",work,"Easy til "+km+" km i alt"]}}
 function weekDays(a,b,c,d,e,f,g,...sessions){const names=["MAN","TIR","ONS","TOR","FRE","LØR","SØN"],dates=[a,b,c,d,e,f,g];return sessions.map((s,i)=>({day:names[i],date:dates[i],...s}))}
 
-let week=41;
+function getISOWeek(date){
+ const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+ const day=d.getUTCDay()||7;
+ d.setUTCDate(d.getUTCDate()+4-day);
+ const yearStart=new Date(Date.UTC(d.getUTCFullYear(),0,1));
+ return Math.ceil((((d-yearStart)/86400000)+1)/7);
+}
+
+let week=getISOWeek(new Date());
 const el=document.querySelector("#workouts");
 const dayNames=["Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"];
 
@@ -64,12 +72,15 @@ function moveWorkout(from,to){
 }
 function render(){
  const p=plans[week]||{km:0,days:[]};
+ const now=new Date();
+ const todayIndex=(now.getDay()+6)%7;
+ const currentWeek=getISOWeek(now);
  applySavedMoves(p);
  document.querySelector("#weekTitle").textContent="Uge "+week;
  document.querySelector("#weekLabel").textContent="Uge "+week;
  document.querySelector("#weekKm").textContent=p.km+" km";
  if(!p.days.length){el.innerHTML='<div class="card"><div style="padding:28px;text-align:center;color:#77716c">Denne uge er ikke udfyldt endnu.</div></div>';return}
- el.innerHTML=p.days.map((d,i)=>`<article class="card" data-i="${i}">
+ el.innerHTML=p.days.map((d,i)=>`<article class="card ${week===currentWeek&&i===todayIndex?"today":""}" data-i="${i}">
  <button class="card-button" aria-expanded="false">
   <div class="day"><strong>${d.day}</strong><span>${d.date}</span></div>
   <div class="badge ${d.type}">${d.icon}</div>
