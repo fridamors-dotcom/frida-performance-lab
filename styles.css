@@ -130,3 +130,8 @@
 .card.today{position:relative;border-color:rgba(24,22,21,.18);border-left:5px solid rgba(86,56,66,.72)}
 .card.today .card-button{padding-left:10px}
 .card.today.completed{border-left-color:#42633f}
+
+
+/* Stronger today marker */
+.card.today{border:2px solid rgba(86,56,66,.62)!important;border-left:8px solid rgba(86,56,66,.88)!important;box-shadow:0 7px 24px rgba(86,56,66,.10)}
+.card.today .day strong::after{content:" · I DAG";font-size:9px;letter-spacing:.08em;color:#6d4653}
