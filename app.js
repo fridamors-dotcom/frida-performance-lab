@@ -30,8 +30,41 @@ function weekDays(a,b,c,d,e,f,g,...sessions){const names=["MAN","TIR","ONS","TOR
 
 let week=41;
 const el=document.querySelector("#workouts");
+const dayNames=["Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"];
+
+function storageKey(){return "frida-plan-week-"+week}
+function applySavedMoves(p){
+ try{
+  const saved=JSON.parse(localStorage.getItem(storageKey())||"null");
+  if(saved&&Array.isArray(saved.days)&&saved.days.length===7){
+   p.days=saved.days;
+   p.km=p.days.reduce((sum,d)=>sum+(d.type!=="rest"?(parseFloat(d.title)||0):0),0);
+  }
+ }catch(e){}
+}
+function saveWeek(p){
+ try{localStorage.setItem(storageKey(),JSON.stringify({days:p.days}))}catch(e){}
+}
+function moveWorkout(from,to){
+ if(from===to)return;
+ const p=plans[week]; if(!p)return;
+ const source=p.days[from],target=p.days[to];
+ if(!source||source.type==="rest")return;
+ if(target.type!=="rest"&&!confirm(dayNames[to]+" har allerede et løb. Byt de to dage?"))return;
+ const keepSource={day:source.day,date:source.date};
+ const keepTarget={day:target.day,date:target.date};
+ if(target.type==="rest"){
+   p.days[from]={...rest(),...keepSource};
+   p.days[to]={...source,...keepTarget};
+ }else{
+   p.days[from]={...target,...keepSource};
+   p.days[to]={...source,...keepTarget};
+ }
+ saveWeek(p);render();
+}
 function render(){
  const p=plans[week]||{km:0,days:[]};
+ applySavedMoves(p);
  document.querySelector("#weekTitle").textContent="Uge "+week;
  document.querySelector("#weekLabel").textContent="Uge "+week;
  document.querySelector("#weekKm").textContent=p.km+" km";
@@ -43,9 +76,10 @@ function render(){
   <div class="summary"><strong>${d.title}${d.name?'<br>'+d.name:''}</strong><span>${d.meta}</span></div>
   <span class="chevron">›</span>
  </button>
- <div class="details"><div><div class="detail-inner"><p>${d.description}</p>${d.steps.length?'<ul>'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>':''}<button class="complete">Markér som gennemført</button></div></div></div>
+ <div class="details"><div><div class="detail-inner"><p>${d.description}</p>${d.steps.length?'<ul>'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>':''}${d.type!=="rest"?'<div class="move-row"><label>Flyt løbet til <select class="move-select" data-from="'+i+'">'+dayNames.map((n,di)=>'<option value="'+di+'" '+(di===i?'selected':'')+'>'+n+'</option>').join('')+'</select></label></div>':''}<button class="complete">Markér som gennemført</button></div></div></div>
  </article>`).join("");
  document.querySelectorAll(".card-button").forEach(btn=>btn.addEventListener("click",()=>{const c=btn.closest(".card");c.classList.toggle("open");btn.setAttribute("aria-expanded",c.classList.contains("open"))}));
+ document.querySelectorAll(".move-select").forEach(sel=>sel.addEventListener("change",e=>{e.stopPropagation();moveWorkout(Number(sel.dataset.from),Number(sel.value))}));
  document.querySelectorAll(".complete").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();btn.classList.toggle("done");btn.textContent=btn.classList.contains("done")?"✓ Gennemført":"Markér som gennemført"}));
 }
 document.querySelector("#prevBtn").addEventListener("click",()=>{week--;render()});
