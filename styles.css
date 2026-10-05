@@ -48,3 +48,33 @@
   .detail-inner{margin-left:143px}
   .card.open{overflow:auto}
 }
+
+
+/* Expanded card should visibly grow in place instead of hiding details below the viewport */
+@media(max-width:600px){
+  .workouts:has(.card.open){
+    grid-template-rows:none;
+    align-content:start;
+    overflow-y:auto;
+  }
+  .workouts:has(.card.open) .card{
+    flex:none;
+    min-height:58px;
+  }
+  .workouts:has(.card.open) .card-button{
+    height:auto;
+    min-height:58px;
+    flex:none;
+  }
+  .workouts:has(.card.open) .card.open{
+    overflow:visible;
+  }
+  .card.open .details{
+    flex:0 0 auto;
+  }
+  .card.open .detail-inner{
+    margin-left:13px;
+    margin-right:13px;
+    padding:13px 0 16px;
+  }
+}
