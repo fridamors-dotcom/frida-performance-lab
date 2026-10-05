@@ -78,3 +78,35 @@
     padding:13px 0 16px;
   }
 }
+
+
+/* When a workout is open, let the page itself grow so the complete card is visible */
+@media(max-width:600px){
+  body:has(.card.open),
+  html:has(.card.open){
+    height:auto;
+    min-height:100%;
+    overflow-y:auto;
+  }
+  .app:has(.card.open){
+    height:auto;
+    min-height:100dvh;
+    overflow:visible;
+  }
+  .app:has(.card.open) .workouts{
+    flex:none;
+    min-height:auto;
+    overflow:visible;
+  }
+  .app:has(.card.open) .card.open{
+    height:auto;
+    max-height:none;
+    overflow:visible;
+  }
+  .app:has(.card.open) .card.open .details,
+  .app:has(.card.open) .card.open .details>div{
+    height:auto;
+    max-height:none;
+    overflow:visible;
+  }
+}
