@@ -116,3 +116,11 @@
 .move-row{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
 .move-row label{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;font-weight:600;color:#48423e}
 .move-select{min-width:132px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.72);color:var(--text);font:inherit;font-size:16px;padding:9px 30px 9px 10px}
+
+
+/* Completed workout */
+.card.completed{background:#dfe9d9;border-color:rgba(66,99,63,.18)}
+.card.completed .card-button{background:rgba(223,233,217,.72)}
+.card.completed .details{background:rgba(223,233,217,.72)}
+.card.completed .badge{background:rgba(255,255,255,.55);color:var(--easy-ink)}
+.card.completed .complete{background:#cbdcc4;color:#31522f;border-color:rgba(66,99,63,.16)}
