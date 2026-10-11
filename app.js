@@ -8,17 +8,17 @@ const plans={
 {day:"LØR",date:"10. okt.",type:"rest",icon:"⌑",title:"Hvile",name:"",meta:"Ingen løb",description:"Ingen planlagt løbetræning.",steps:[]},
 {day:"SØN",date:"11. okt.",type:"long",icon:"∞",title:"8 km",name:"Long easy",meta:"Rolig langtur",description:"Ugens længste tur. Hold tempoet komfortabelt hele vejen.",steps:["8 km roligt","Ingen fokus på pace"]}
 ]},
-42:{km:16,days:weekDays("12. okt.","13. okt.","14. okt.","15. okt.","16. okt.","17. okt.","18. okt.",easy(5),rest(),rest(),easy(3),rest(),rest(),longRun(8))},
-43:{km:17,days:weekDays("19. okt.","20. okt.","21. okt.","22. okt.","23. okt.","24. okt.","25. okt.",easy(5),rest(),rest(),easy(4),rest(),rest(),longRun(8))},
-44:{km:18,days:weekDays("26. okt.","27. okt.","28. okt.","29. okt.","30. okt.","31. okt.","1. nov.",easy(5),rest(),rest(),strides(4),rest(),rest(),longRun(9))},
+42:{km:16,days:weekDays("12. okt.","13. okt.","14. okt.","15. okt.","16. okt.","17. okt.","18. okt.",rest(),easy(5),rest(),easy(3),rest(),rest(),longRun(8))},
+43:{km:17,days:weekDays("19. okt.","20. okt.","21. okt.","22. okt.","23. okt.","24. okt.","25. okt.",rest(),easy(5),rest(),easy(4),rest(),rest(),longRun(8))},
+44:{km:18,days:weekDays("26. okt.","27. okt.","28. okt.","29. okt.","30. okt.","31. okt.","1. nov.",rest(),easy(5),rest(),strides(4),rest(),rest(),longRun(9))},
 45:{km:13,days:weekDays("2. nov.","3. nov.","4. nov.","5. nov.","6. nov.","7. nov.","8. nov.",rest("London"),rest("London"),rest("London"),easy(5),rest(),rest(),longRun(8))},
-46:{km:19,days:weekDays("9. nov.","10. nov.","11. nov.","12. nov.","13. nov.","14. nov.","15. nov.",easy(5),rest(),rest(),fartlek(5,"5 × 1 min frisk / 2 min easy"),rest(),rest(),longRun(9))},
-47:{km:14,days:weekDays("16. nov.","17. nov.","18. nov.","19. nov.","20. nov.","21. nov.","22. nov.",easy(5),rest(),rest(),rest("Sommerhus"),rest("Sommerhus"),rest("Sommerhus"),longRun(9))},
-48:{km:20,days:weekDays("23. nov.","24. nov.","25. nov.","26. nov.","27. nov.","28. nov.","29. nov.",easy(5),rest(),rest(),strides(5),rest(),rest(),longRun(10))},
+46:{km:19,days:weekDays("9. nov.","10. nov.","11. nov.","12. nov.","13. nov.","14. nov.","15. nov.",rest(),easy(5),rest(),fartlek(5,"5 × 1 min frisk / 2 min easy"),rest(),rest(),longRun(9))},
+47:{km:14,days:weekDays("16. nov.","17. nov.","18. nov.","19. nov.","20. nov.","21. nov.","22. nov.",rest(),easy(5),rest(),rest("Sommerhus"),rest("Sommerhus"),rest("Sommerhus"),longRun(9))},
+48:{km:20,days:weekDays("23. nov.","24. nov.","25. nov.","26. nov.","27. nov.","28. nov.","29. nov.",rest(),easy(5),rest(),strides(5),rest(),rest(),longRun(10))},
 49:{km:14,days:weekDays("30. nov.","1. dec.","2. dec.","3. dec.","4. dec.","5. dec.","6. dec.",rest("København"),rest("København"),rest(),fartlek(5,"6 × 1 min frisk / 2 min easy"),rest(),rest(),longRun(9))},
-50:{km:21,days:weekDays("7. dec.","8. dec.","9. dec.","10. dec.","11. dec.","12. dec.","13. dec.",easy(6),rest(),rest(),strides(5),rest(),rest(),longRun(10))},
-51:{km:21,days:weekDays("14. dec.","15. dec.","16. dec.","17. dec.","18. dec.","19. dec.","20. dec.",easy(6),rest(),rest(),fartlek(5,"4 × 2 min frisk / 2 min easy"),rest(),rest(),longRun(10))},
-52:{km:13,days:weekDays("21. dec.","22. dec.","23. dec.","24. dec.","25. dec.","26. dec.","27. dec.",easy(5),rest(),rest("Jul"),rest("Jul"),rest("Jul"),rest(),longRun(8))}
+50:{km:21,days:weekDays("7. dec.","8. dec.","9. dec.","10. dec.","11. dec.","12. dec.","13. dec.",rest(),easy(6),rest(),strides(5),rest(),rest(),longRun(10))},
+51:{km:21,days:weekDays("14. dec.","15. dec.","16. dec.","17. dec.","18. dec.","19. dec.","20. dec.",rest(),easy(6),rest(),fartlek(5,"4 × 2 min frisk / 2 min easy"),rest(),rest(),longRun(10))},
+52:{km:13,days:weekDays("21. dec.","22. dec.","23. dec.","24. dec.","25. dec.","26. dec.","27. dec.",rest(),easy(5),rest("Jul"),rest("Jul"),rest("Jul"),rest(),longRun(8))}
 };
 
 function easy(km){return{type:"easy",icon:"⌁",title:km+" km",name:"Easy",meta:"Roligt og kontrolleret",description:"Rolig tur. Du skal kunne føre en samtale og slutte med følelsen af, at du kunne have løbet længere.",steps:[km+" km easy","Lad følelsen styre; puls er kun støtte"]}}
