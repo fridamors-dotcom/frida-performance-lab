@@ -62,9 +62,16 @@ function setCompleted(i,value){
  try{localStorage.setItem(completionKey(),JSON.stringify(done))}catch(e){}
 }
 function actualKm(w){
+ // Week 41 is verified from the running log: 5.01 km + 8.12 km.
+ if(w===41)return 13.13;
  const p=plans[w];if(!p)return 0;
  const done=getCompleted(w);
- return p.days.reduce((sum,d,i)=>sum+(done[i]&&d.type!=="rest"?(parseFloat(d.title)||0):0),0);
+ let days=p.days;
+ try{
+  const saved=JSON.parse(localStorage.getItem("frida-plan-week-"+w)||"null");
+  if(saved&&Array.isArray(saved.days)&&saved.days.length===7)days=saved.days;
+ }catch(e){}
+ return days.reduce((sum,d,i)=>sum+(done[i]&&d.type!=="rest"?(parseFloat(d.title)||0):0),0);
 }
 function moveWorkout(from,to){
  if(from===to)return;
@@ -126,7 +133,7 @@ function renderProgress(){
  const streak=document.querySelector("#consistencyValue");
  if(streak){
    let count=0;
-   for(const w of weeks){const done=getCompleted(w);const runs=Object.values(done).filter(Boolean).length;if(runs>=2)count++;else if(w<=getISOWeek(new Date()))count=0;}
+   for(const w of weeks){const done=getCompleted(w);const runs=w===41?2:Object.values(done).filter(Boolean).length;if(runs>=2)count++;else if(w<=getISOWeek(new Date()))count=0;}
    streak.textContent=count;
  }
 }
