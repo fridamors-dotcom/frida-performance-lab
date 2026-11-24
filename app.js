@@ -61,9 +61,25 @@ function setCompleted(i,value){
  const done=getCompleted();done[i]=value;
  try{localStorage.setItem(completionKey(),JSON.stringify(done))}catch(e){}
 }
+function savedDays(w){
+ const p=plans[w]; if(!p)return [];
+ try{const saved=JSON.parse(localStorage.getItem("frida-plan-week-"+w)||"null");if(saved&&Array.isArray(saved.days)&&saved.days.length===7)return saved.days;}catch(e){}
+ return p.days;
+}
+function plannedKm(w){return savedDays(w).reduce((sum,d)=>sum+(d.type!=="rest"?(parseFloat(d.title)||0):0),0);}
+function fmtKm(n){return Number(n.toFixed(2)).toString().replace(".",",");}
+function editDistance(i,value){
+ const p=plans[week],d=p?.days[i];const km=Number(String(value).trim().replace(",","."));
+ if(!d||d.type==="rest"||!String(value).trim()||!Number.isFinite(km)||km<=0||km>100){alert("Indtast en distance mellem 0 og 100 km.");return;}
+ const n=Number(km.toFixed(2));if(n<=0)return;
+ const old=parseFloat(d.title);d.title=n+" km";
+ d.steps=d.steps.map(step=>step.replace(/(\d+(?:[.,]\d+)?) km/g,(match,num)=>Number(num.replace(",","."))===old? n+" km":match));
+ if(week===41){const done=getCompleted();if(!localStorage.getItem("frida-distance-edited-41")){p.days.forEach((day,j)=>{if(day.type!=="rest")done[j]=true;});localStorage.setItem(completionKey(),JSON.stringify(done));localStorage.setItem("frida-distance-edited-41","1");}}saveWeek(p);p.km=plannedKm(week);render();renderProgress();
+ const card=el.querySelector(`[data-i="${i}"]`);if(card){card.classList.add("open");card.querySelector(".card-button").setAttribute("aria-expanded","true");}
+}
 function actualKm(w){
  // Week 41 is verified from the running log: 5.01 km + 8.12 km.
- if(w===41)return 13.13;
+ if(w===41&&!localStorage.getItem("frida-distance-edited-41"))return 13.13;
  const p=plans[w];if(!p)return 0;
  const done=getCompleted(w);
  let days=p.days;
@@ -88,7 +104,8 @@ function moveWorkout(from,to){
    p.days[from]={...target,...keepSource};
    p.days[to]={...source,...keepTarget};
  }
- saveWeek(p);render();
+ const done=getCompleted();const a=!!done[from],b=!!done[to];done[to]=a;done[from]=target.type!=="rest"&&b;try{localStorage.setItem(completionKey(),JSON.stringify(done))}catch(e){}
+ saveWeek(p);render();renderProgress();
 }
 function render(){
  const p=plans[week]||{km:0,days:[]};
@@ -101,7 +118,7 @@ function render(){
  applySavedMoves(p);
  document.querySelector("#weekTitle").textContent="Uge "+week;
  document.querySelector("#weekLabel").textContent="Uge "+week;
- document.querySelector("#weekKm").textContent=p.km+" km";
+ document.querySelector("#weekKm").textContent=fmtKm(plannedKm(week))+" km";
  if(!p.days.length){el.innerHTML='<div class="card"><div style="padding:28px;text-align:center;color:#77716c">Denne uge er ikke udfyldt endnu.</div></div>';return}
  const completed=getCompleted();
  el.innerHTML=p.days.map((d,i)=>`<article class="card ${week===currentWeek&&(i===todayIndex||d.date===todayLabel)?"today":""} ${completed[i]?"completed":""}" data-i="${i}">
@@ -111,10 +128,11 @@ function render(){
   <div class="summary"><strong>${d.title}${d.name?'<br>'+d.name:''}</strong><span>${d.meta}</span></div>
   <span class="chevron">›</span>
  </button>
- <div class="details"><div><div class="detail-inner"><p>${d.description}</p>${d.steps.length?'<ul>'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>':''}${d.type!=="rest"?'<div class="move-row"><label>Flyt løbet til <select class="move-select" data-from="'+i+'">'+dayNames.map((n,di)=>'<option value="'+di+'" '+(di===i?'selected':'')+'>'+n+'</option>').join('')+'</select></label></div>':''}<button class="complete ${completed[i]?"done":""}">${completed[i]?"✓ Gennemført":"Markér som gennemført"}</button></div></div></div>
+ <div class="details"><div><div class="detail-inner"><p>${d.description}</p>${d.steps.length?'<ul>'+d.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>':''}${d.type!=="rest"?'<div class="move-row"><label>Distance (km) <input class="distance-input" type="text" inputmode="decimal" value="'+fmtKm(parseFloat(d.title))+'" style="width:65px;font:inherit;padding:5px;border:1px solid #d5b8bf;border-radius:6px"></label> <button type="button" class="distance-save" style="font:inherit;padding:5px 9px;border:1px solid #d5b8bf;border-radius:6px;background:transparent;color:inherit">Gem</button></div><div class="move-row"><label>Flyt løbet til <select class="move-select" data-from="'+i+'">'+dayNames.map((n,di)=>'<option value="'+di+'" '+(di===i?'selected':'')+'>'+n+'</option>').join('')+'</select></label></div>':''}<button class="complete ${completed[i]?"done":""}">${completed[i]?"✓ Gennemført":"Markér som gennemført"}</button></div></div></div>
  </article>`).join("");
  document.querySelectorAll(".card-button").forEach(btn=>btn.addEventListener("click",()=>{const c=btn.closest(".card");c.classList.toggle("open");btn.setAttribute("aria-expanded",c.classList.contains("open"))}));
  document.querySelectorAll(".move-select").forEach(sel=>sel.addEventListener("change",e=>{e.stopPropagation();moveWorkout(Number(sel.dataset.from),Number(sel.value))}));
+ document.querySelectorAll(".distance-save").forEach(btn=>btn.addEventListener("click",()=>{const card=btn.closest(".card");editDistance(Number(card.dataset.i),card.querySelector(".distance-input").value)}));
  document.querySelectorAll(".complete").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();const card=btn.closest(".card");const i=Number(card.dataset.i);btn.classList.toggle("done");const done=btn.classList.contains("done");card.classList.toggle("completed",done);btn.textContent=done?"✓ Gennemført":"Markér som gennemført";setCompleted(i,done);renderProgress()}));
 }
 document.querySelector("#prevBtn").addEventListener("click",()=>{week--;render()});
@@ -125,10 +143,10 @@ render();
 function renderProgress(){
  const chart=document.querySelector("#kmChart"); if(!chart)return;
  const weeks=Object.keys(plans).map(Number).sort((a,b)=>a-b);
- const max=Math.max(...weeks.map(w=>plans[w].km),1);
+ const max=Math.max(...weeks.map(w=>plannedKm(w)),1);
  chart.innerHTML=weeks.map(w=>{
-   const planned=plans[w].km,actual=actualKm(w),pct=Math.min(100,(actual/planned)*100);
-   return '<div class="bar-col"><div class="bar-value">'+actual+'/'+planned+'</div><div class="bar-track" title="'+actual+' af '+planned+' km"><div class="bar-plan"></div><div class="bar-fill" style="height:'+pct+'%"></div></div><span>U'+w+'</span></div>';
+   const planned=plannedKm(w),actual=actualKm(w),pct=planned?Math.min(100,(actual/planned)*100):0;
+   return '<div class="bar-col"><div class="bar-value">'+fmtKm(actual)+'/'+fmtKm(planned)+'</div><div class="bar-track" title="'+fmtKm(actual)+' af '+fmtKm(planned)+' km"><div class="bar-plan"></div><div class="bar-fill" style="height:'+pct+'%"></div></div><span>U'+w+'</span></div>';
  }).join("");
  const streak=document.querySelector("#consistencyValue");
  if(streak){
