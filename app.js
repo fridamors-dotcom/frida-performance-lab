@@ -14,10 +14,10 @@ const plans={
 45:{km:13,days:weekDays("2. nov.","3. nov.","4. nov.","5. nov.","6. nov.","7. nov.","8. nov.",rest("London"),rest("London"),rest("London"),easy(5),rest(),rest(),longRun(8))},
 46:{km:19,days:weekDays("9. nov.","10. nov.","11. nov.","12. nov.","13. nov.","14. nov.","15. nov.",rest(),easy(5),rest(),fartlek(5,"5 × 1 min frisk / 2 min easy"),rest(),rest(),longRun(9))},
 47:{km:14,days:weekDays("16. nov.","17. nov.","18. nov.","19. nov.","20. nov.","21. nov.","22. nov.",rest(),easy(5),rest(),rest("Sommerhus"),rest("Sommerhus"),rest("Sommerhus"),longRun(9))},
-48:{km:20,days:weekDays("23. nov.","24. nov.","25. nov.","26. nov.","27. nov.","28. nov.","29. nov.",rest(),easy(5),rest(),strides(5),rest(),rest(),longRun(10))},
-49:{km:14,days:weekDays("30. nov.","1. dec.","2. dec.","3. dec.","4. dec.","5. dec.","6. dec.",rest("København"),rest("København"),rest(),fartlek(5,"6 × 1 min frisk / 2 min easy"),rest(),rest(),longRun(9))},
-50:{km:21,days:weekDays("7. dec.","8. dec.","9. dec.","10. dec.","11. dec.","12. dec.","13. dec.",rest(),easy(6),rest(),strides(5),rest(),rest(),longRun(10))},
-51:{km:21,days:weekDays("14. dec.","15. dec.","16. dec.","17. dec.","18. dec.","19. dec.","20. dec.",rest(),easy(6),rest(),fartlek(5,"4 × 2 min frisk / 2 min easy"),rest(),rest(),longRun(10))},
+48:{km:18.01,days:weekDays("23. nov.","24. nov.","25. nov.","26. nov.","27. nov.","28. nov.","29. nov.",rest(),longRun(9.01),rest(),easy(4),rest(),rest(),easy(5))},
+49:{km:14,days:weekDays("30. nov.","1. dec.","2. dec.","3. dec.","4. dec.","5. dec.","6. dec.",rest("København"),rest("København"),rest(),fartlek(5,"6 × 1 min ved 5:30–5:40/km / 2 min rolig jog"),rest(),rest(),longRun(9))},
+50:{km:21,days:weekDays("7. dec.","8. dec.","9. dec.","10. dec.","11. dec.","12. dec.","13. dec.",rest(),easy(6),rest(),easy(5),rest(),rest(),progressive(10))},
+51:{km:21,days:weekDays("14. dec.","15. dec.","16. dec.","17. dec.","18. dec.","19. dec.","20. dec.",rest(),easy(6),rest(),kmIntervals(6),rest(),rest(),longRun(9))},
 52:{km:13,days:weekDays("21. dec.","22. dec.","23. dec.","24. dec.","25. dec.","26. dec.","27. dec.",rest(),easy(5),rest("Jul"),rest("Jul"),rest("Jul"),rest(),longRun(8))}
 };
 
@@ -26,6 +26,8 @@ function longRun(km){return{type:"long",icon:"∞",title:km+" km",name:"Long eas
 function rest(note=""){return{type:"rest",icon:"⌑",title:"Hvile",name:"",meta:note||"Ingen løb",description:note?note+" – ingen planlagt løbetræning.":"Ingen planlagt løbetræning.",steps:[]}}
 function strides(km){return{type:"easy",icon:"⌁",title:km+" km",name:"Easy + strides",meta:"Let fart · kontrolleret",description:"Rolig tur med korte, afslappede accelerationer mod slutningen. Formålet er fart uden at gøre passet hårdt.",steps:[km+" km i alt","4 × 20 sek. strides mod slutningen","Rolig gang/jog mellem hver"]}}
 function fartlek(km,work){return{type:"quality",icon:"⚡",title:km+" km",name:"Fartlek",meta:"Kontrolleret kvalitet",description:"Løb de hurtige dele frisk og afslappet – ikke max. Du skal have overskud til én gentagelse mere.",steps:["1,5 km easy",work,"Easy til "+km+" km i alt"]}}
+function progressive(km){return{type:"quality",icon:"⚡",title:km+" km",name:"Progressiv langtur",meta:"Kontrolleret tempo",description:"Kun ved smertefri knæ og friske ben. Tempo er vejledende; hold igen hvis det føles hårdt.",steps:["5 km easy i snakketempo","3 km ved 6:15–6:30/km","2 km ved 5:45–6:00/km"]}}
+function kmIntervals(km){return{type:"quality",icon:"⚡",title:km+" km",name:"Kilometerintervaller",meta:"Halvmaratontempo",description:"Kontrolleret fart, ikke maksimal indsats. Kun ved smertefri knæ.",steps:["2 km rolig opvarmning","1 km ved 5:40–5:50/km","1 km rolig jog","1 km ved 5:40–5:50/km","1 km rolig nedjog"]}}
 function weekDays(a,b,c,d,e,f,g,...sessions){const names=["MAN","TIR","ONS","TOR","FRE","LØR","SØN"],dates=[a,b,c,d,e,f,g];return sessions.map((s,i)=>({day:names[i],date:dates[i],...s}))}
 
 function getISOWeek(date){
